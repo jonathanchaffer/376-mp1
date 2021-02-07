@@ -5,7 +5,7 @@ public class MP1 {
     String password;
     String ipAddress;
 
-    public void getUserInput() {
+    public void promptUser() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter domain:");
         domain = scan.nextLine();
@@ -17,6 +17,6 @@ public class MP1 {
 
     public static void main(String[] args) {
         MP1 mp1 = new MP1();
-        mp1.getUserInput();
+        mp1.promptUser();
     }
 }
