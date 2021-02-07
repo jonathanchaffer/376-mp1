@@ -9,6 +9,7 @@ public class MP1 {
     static final int DEFAULT_PORT = 443;
     static final int TIMEOUT = 10 * 1000;
     static final String HOST = "dynamicdns.park-your-domain.com";
+    static final int SLEEP_TIME = 1 * 1000;
 
     private String domain;
     private String password;
@@ -43,7 +44,15 @@ public class MP1 {
         send.println("GET /update?host=@&domain=" + domain + "&password=" + password + "&ip=" + ipAddress + " HTTP/1.1");
         send.println("Host: " + HOST);
         send.println("");
+        System.out.println("Request has been sent.");
     }
+
+    public void sleep() throws InterruptedException {
+        System.out.println("Now sleeping for " + SLEEP_TIME / 1000 + " seconds. Please wait...");
+        Thread.sleep(SLEEP_TIME);
+        System.out.println("Done sleeping.");
+    }
+    
 
     public static void main(String[] args) {
         try {
@@ -51,6 +60,7 @@ public class MP1 {
             mp1.promptUser();
             mp1.initializeSocket();
             mp1.sendRequest();
+            mp1.sleep();
         } catch (Exception e) {
             e.printStackTrace();
         }
