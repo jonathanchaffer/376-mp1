@@ -52,7 +52,6 @@ public class MP1 {
         Thread.sleep(SLEEP_TIME);
         System.out.println("Done sleeping.");
     }
-    
 
     public static void main(String[] args) {
         try {
