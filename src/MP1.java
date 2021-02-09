@@ -58,6 +58,31 @@ public class MP1 {
         System.out.println("Request has been sent.");
     }
 
+    public boolean checkResponse() {
+        System.out.println("Now checking response...");
+        StringBuilder buffer = new StringBuilder();
+        boolean eof = false;
+        while (!eof) {
+            try {
+                byte b = reply.readByte();
+                if (b != 0) buffer.append(Character.toChars(b));
+                else eof = true;
+            } catch (Exception e) {
+                eof = true;
+            }
+        }
+        closeSocket();
+        return buffer.toString().contains("<ErrCount>0</ErrCount>");
+    }
+
+    public void closeSocket() {
+        try {
+            sock.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sleep() throws InterruptedException {
         System.out.println("Now sleeping for " + SLEEP_TIME / 1000 + " seconds. Please wait...");
         Thread.sleep(SLEEP_TIME);
@@ -82,6 +107,10 @@ public class MP1 {
             mp1.promptUser();
             mp1.initializeSocket();
             mp1.sendRequest();
+            if (!mp1.checkResponse()) {
+                System.err.println("Something went wrong. The server responded with an error.");
+                return;
+            }
             mp1.sleep();
             mp1.verifyRequest();
         } catch (Exception e) {
