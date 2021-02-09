@@ -3,13 +3,15 @@ import javax.net.ssl.SSLSocketFactory;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class MP1 {
     static final int DEFAULT_PORT = 443;
     static final int TIMEOUT = 10 * 1000;
     static final String HOST = "dynamicdns.park-your-domain.com";
-    static final int SLEEP_TIME = 1 * 1000;
+    static final int SLEEP_TIME = 180 * 1000;
 
     private String domain;
     private String password;
@@ -19,9 +21,18 @@ public class MP1 {
     private DataInputStream reply;
     private SSLSocket sock;
 
+    public void clearCache() {
+        System.setProperty("networkaddress.cache.ttl", "0");
+    }
+
+    public void printWelcome() {
+        System.out.println("Welcome! This app lets you update the Dynamic DNS\nrecord associated with a Namecheap domain.");
+        System.out.println();
+    }
+
     public void promptUser() {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Enter domain:");
+        System.out.println("Enter domain name:");
         domain = scan.nextLine();
         System.out.println("Enter password:");
         password = scan.nextLine();
@@ -53,13 +64,26 @@ public class MP1 {
         System.out.println("Done sleeping.");
     }
 
+    public void verifyRequest() throws UnknownHostException {
+        InetAddress resolution = InetAddress.getByName(domain);
+        String resolvedAddress = resolution.getHostAddress();
+        System.out.println("Resolved address: " + resolvedAddress);
+        if (resolvedAddress.equals(ipAddress))
+            System.out.println("Success! This matches the IP address you inputted.");
+        else
+            System.err.println("Something went wrong. This does not match the IP address you inputted.");
+    }
+
     public static void main(String[] args) {
         try {
             MP1 mp1 = new MP1();
+            mp1.clearCache();
+            mp1.printWelcome();
             mp1.promptUser();
             mp1.initializeSocket();
             mp1.sendRequest();
             mp1.sleep();
+            mp1.verifyRequest();
         } catch (Exception e) {
             e.printStackTrace();
         }
